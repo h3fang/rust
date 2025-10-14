@@ -1,4 +1,7 @@
-use crate::spec::{Arch, CodeModel, Target, TargetOptions, base};
+use crate::spec::{
+    Arch, CodeModel, StandardLibrarySupport, Target, TargetOptions, TargetStandardLibrarySupport,
+    base,
+};
 
 pub(crate) fn target() -> Target {
     Target {
@@ -7,7 +10,10 @@ pub(crate) fn target() -> Target {
             description: Some("managarm/riscv64".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: Some(false),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Core,
+                StandardLibrarySupport::Core,
+            )),
         },
         pointer_width: 64,
         data_layout: "e-m:e-p:64:64-i64:64-i128:128-n32:64-S128".into(),

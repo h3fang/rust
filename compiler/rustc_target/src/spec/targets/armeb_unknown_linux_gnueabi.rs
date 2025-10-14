@@ -1,6 +1,9 @@
 use rustc_abi::Endian;
 
-use crate::spec::{Abi, Arch, FloatAbi, Target, TargetMetadata, TargetOptions, base};
+use crate::spec::{
+    Abi, Arch, FloatAbi, StandardLibrarySupport, Target, TargetMetadata, TargetOptions,
+    TargetStandardLibrarySupport, base,
+};
 
 pub(crate) fn target() -> Target {
     Target {
@@ -9,7 +12,10 @@ pub(crate) fn target() -> Target {
             description: Some("Arm BE8 the default Arm big-endian architecture since Armv6".into()),
             tier: Some(3),
             host_tools: None, // ?
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 32,
         data_layout: "E-m:e-p:32:32-Fi8-i64:64-v128:64:128-a:0:32-n32-S64".into(),

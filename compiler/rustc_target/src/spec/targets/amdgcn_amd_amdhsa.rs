@@ -1,5 +1,6 @@
 use crate::spec::{
-    Arch, Cc, LinkerFlavor, Lld, Os, PanicStrategy, Target, TargetMetadata, TargetOptions,
+    Arch, Cc, LinkerFlavor, Lld, Os, PanicStrategy, StandardLibrarySupport, Target, TargetMetadata,
+    TargetOptions, TargetStandardLibrarySupport,
 };
 
 pub(crate) fn target() -> Target {
@@ -11,7 +12,10 @@ pub(crate) fn target() -> Target {
             description: Some("AMD GPU".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: Some(false),
+                    standard_library_support: Some(TargetStandardLibrarySupport {
+            supported: StandardLibrarySupport::Core,
+            default: StandardLibrarySupport::Core,
+        }),
         },
         pointer_width: 64,
 

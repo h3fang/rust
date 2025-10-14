@@ -1,5 +1,6 @@
 use crate::spec::{
-    Arch, Env, Os, PanicStrategy, RelocModel, Target, TargetMetadata, TargetOptions, cvs,
+    Arch, Env, Os, PanicStrategy, RelocModel, StandardLibrarySupport, Target, TargetMetadata,
+    TargetOptions, TargetStandardLibrarySupport, cvs,
 };
 
 pub(crate) fn target() -> Target {
@@ -10,7 +11,10 @@ pub(crate) fn target() -> Target {
             description: Some("RISC-V ESP-IDF".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 32,
         arch: Arch::RiscV32,

@@ -1,7 +1,8 @@
 use std::borrow::Cow;
 
 use crate::spec::{
-    Arch, CodeModel, SanitizerSet, SplitDebuginfo, Target, TargetMetadata, TargetOptions, base,
+    Arch, CodeModel, SanitizerSet, SplitDebuginfo, StandardLibrarySupport, Target, TargetMetadata,
+    TargetOptions, TargetStandardLibrarySupport, base,
 };
 
 pub(crate) fn target() -> Target {
@@ -11,7 +12,10 @@ pub(crate) fn target() -> Target {
             description: Some("RISC-V 64-bit Android".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 64,
         data_layout: "e-m:e-p:64:64-i64:64-i128:128-n32:64-S128".into(),

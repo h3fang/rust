@@ -1,7 +1,8 @@
 use std::borrow::Cow;
 
 use crate::spec::{
-    Abi, Arch, Cc, Env, LinkerFlavor, Lld, Os, Target, TargetMetadata, TargetOptions, cvs,
+    Abi, Arch, Cc, Env, LinkerFlavor, Lld, Os, StandardLibrarySupport, Target, TargetMetadata,
+    TargetOptions, TargetStandardLibrarySupport, cvs,
 };
 
 pub(crate) fn target() -> Target {
@@ -80,7 +81,10 @@ pub(crate) fn target() -> Target {
             description: Some("Fortanix ABI for 64-bit Intel SGX".into()),
             tier: Some(2),
             host_tools: Some(false),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 64,
         data_layout:

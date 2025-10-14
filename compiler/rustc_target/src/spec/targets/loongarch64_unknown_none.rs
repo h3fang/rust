@@ -1,6 +1,6 @@
 use crate::spec::{
-    Arch, Cc, CodeModel, LinkerFlavor, Lld, PanicStrategy, RelocModel, Target, TargetMetadata,
-    TargetOptions,
+    Arch, Cc, CodeModel, LinkerFlavor, Lld, PanicStrategy, RelocModel, StandardLibrarySupport,
+    Target, TargetMetadata, TargetOptions, TargetStandardLibrarySupport,
 };
 
 pub(crate) fn target() -> Target {
@@ -10,7 +10,10 @@ pub(crate) fn target() -> Target {
             description: Some("Freestanding/bare-metal LoongArch64".into()),
             tier: Some(2),
             host_tools: Some(false),
-            std: Some(false),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Core,
+                StandardLibrarySupport::Core,
+            )),
         },
         pointer_width: 64,
         data_layout: "e-m:e-p:64:64-i64:64-i128:128-n32:64-S128".into(),

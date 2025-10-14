@@ -9,7 +9,7 @@ use rustc_abi::Endian;
 
 use crate::spec::{
     Abi, Arch, Cc, LinkerFlavor, Lld, PanicStrategy, RelocModel, SanitizerSet, StackProbeType,
-    Target, TargetMetadata, TargetOptions,
+    StandardLibrarySupport, Target, TargetMetadata, TargetOptions, TargetStandardLibrarySupport,
 };
 
 pub(crate) fn target() -> Target {
@@ -33,7 +33,10 @@ pub(crate) fn target() -> Target {
             description: Some("Bare ARM64 (big-endian), softfloat".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: Some(false),
+                    standard_library_support: Some(TargetStandardLibrarySupport {
+            supported: StandardLibrarySupport::Core,
+            default: StandardLibrarySupport::Core,
+        }),
         },
         pointer_width: 64,
         data_layout: "E-m:e-p270:32:32-p271:32:32-p272:64:64-i8:8:32-i16:16:32-i64:64-i128:128-n32:64-S128-Fn32".into(),

@@ -45,6 +45,7 @@ pub enum PrintKind {
     TargetList,
     TargetSpecJson,
     TargetSpecJsonSchema,
+    TargetStandardLibrarySupport,
     TlsModels,
     // tidy-alphabetical-end
 }
@@ -83,6 +84,7 @@ impl PrintKind {
             TargetList => "target-list",
             TargetSpecJson => "target-spec-json",
             TargetSpecJsonSchema => "target-spec-json-schema",
+            TargetStandardLibrarySupport => "target-standard-library-support",
             TlsModels => "tls-models",
             // tidy-alphabetical-end
         }
@@ -119,6 +121,7 @@ impl PrintKind {
             SupportedCrateTypes => false,
             TargetSpecJson => false,
             TargetSpecJsonSchema => false,
+            TargetStandardLibrarySupport => false,
         }
     }
 

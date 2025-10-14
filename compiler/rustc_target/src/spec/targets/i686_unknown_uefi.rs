@@ -5,7 +5,10 @@
 // The cdecl ABI is used. It differs from the stdcall or fastcall ABI.
 // "i686-unknown-windows" is used to get the minimal subset of windows-specific features.
 
-use crate::spec::{Arch, LinkerFlavor, Lld, RustcAbi, Target, TargetMetadata, add_link_args, base};
+use crate::spec::{
+    Arch, LinkerFlavor, Lld, RustcAbi, StandardLibrarySupport, Target, TargetMetadata,
+    TargetStandardLibrarySupport, add_link_args, base,
+};
 
 pub(crate) fn target() -> Target {
     let mut base = base::uefi_msvc::opts();
@@ -90,7 +93,10 @@ pub(crate) fn target() -> Target {
             description: Some("32-bit UEFI".into()),
             tier: Some(2),
             host_tools: Some(false),
-            std: None, // ?
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Core,
+                StandardLibrarySupport::Core,
+            )), // ?
         },
         pointer_width: 32,
         data_layout: "e-m:x-p:32:32-p270:32:32-p271:32:32-p272:64:64-\

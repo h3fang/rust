@@ -1,4 +1,7 @@
-use crate::spec::{Arch, Cc, LinkerFlavor, Target, TargetMetadata, base};
+use crate::spec::{
+    Arch, Cc, LinkerFlavor, StandardLibrarySupport, Target, TargetMetadata,
+    TargetStandardLibrarySupport, base,
+};
 
 pub(crate) fn target() -> Target {
     let mut base = base::linux_musl::opts();
@@ -19,7 +22,10 @@ pub(crate) fn target() -> Target {
             description: Some("Hexagon Linux with musl 1.2.5".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 32,
         data_layout: concat!(

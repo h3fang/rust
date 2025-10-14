@@ -1,5 +1,6 @@
 use crate::spec::{
-    Arch, Cc, LinkerFlavor, Lld, SanitizerSet, StackProbeType, Target, TargetMetadata, base,
+    Arch, Cc, LinkerFlavor, Lld, SanitizerSet, StackProbeType, StandardLibrarySupport, Target,
+    TargetMetadata, TargetStandardLibrarySupport, base,
 };
 
 pub(crate) fn target() -> Target {
@@ -19,7 +20,10 @@ pub(crate) fn target() -> Target {
             description: Some("64-bit FreeBSD".into()),
             tier: Some(2),
             host_tools: Some(true),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 64,
         data_layout:

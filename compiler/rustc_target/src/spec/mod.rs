@@ -2109,9 +2109,84 @@ pub struct TargetMetadata {
     pub tier: Option<u64>,
     /// Whether the Rust project ships host tools for a target.
     pub host_tools: Option<bool>,
-    /// Whether a target has the `std` library. This is usually true for targets running
-    /// on an operating system.
-    pub std: Option<bool>,
+    /// Standard library support of the target
+    ///
+    /// If `standard_library_support` is unset for a target, then Cargo will not permit any
+    /// standard library crates to be built for the target on a stable toolchain.
+    /// It will be required to use a nightly toolchain to use build-std with that target.
+    pub standard_library_support: Option<TargetStandardLibrarySupport>,
+}
+
+/// Standard library support level
+///
+/// `Std` means "std", "alloc", and "core" are supported
+///
+/// `Alloc` means "alloc" and "core" are supported
+///
+/// `Core` means "core" is supported
+#[derive(Debug, Default, PartialEq, PartialOrd, Clone, Copy)]
+pub enum StandardLibrarySupport {
+    #[default]
+    Core,
+    Alloc,
+    Std,
+}
+
+impl From<&str> for StandardLibrarySupport {
+    fn from(value: &str) -> Self {
+        match value {
+            "core" => Self::Core,
+            "alloc" => Self::Alloc,
+            "std" => Self::Std,
+            x => panic!(
+                "invalid standard library support, expected one of \"std\", \"core\", or \"alloc\", found {x}"
+            ),
+        }
+    }
+}
+
+impl StandardLibrarySupport {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            StandardLibrarySupport::Core => "core",
+            StandardLibrarySupport::Alloc => "alloc",
+            StandardLibrarySupport::Std => "std",
+        }
+    }
+
+    pub fn crates(&self) -> &'static str {
+        match self {
+            Self::Core => "core",
+            Self::Alloc => "core, alloc",
+            Self::Std => "core, alloc, std",
+        }
+    }
+}
+
+/// Standard library support of the target
+#[derive(Default, PartialEq, Clone, Debug)]
+pub struct TargetStandardLibrarySupport {
+    /// Determines which standard library crates Cargo will permit to be built for this target on a stable toolchain.
+    ///
+    /// On a nightly toolchain, Cargo will build whichever standard library crates are requested by the user.
+    supported: StandardLibrarySupport,
+    /// The default field determines which crate will be built by Cargo if build-std = "always" and build-std-crates is not set. Users can specify build-std-crates to build more crates than included in the default, as long as those crates are included in supported.
+    default: StandardLibrarySupport,
+}
+
+impl TargetStandardLibrarySupport {
+    pub fn new(supported: StandardLibrarySupport, default: StandardLibrarySupport) -> Self {
+        assert!(default <= supported);
+        Self { supported, default }
+    }
+
+    pub fn supported(&self) -> StandardLibrarySupport {
+        self.supported
+    }
+
+    pub fn default_support(&self) -> StandardLibrarySupport {
+        self.default
+    }
 }
 
 impl Target {

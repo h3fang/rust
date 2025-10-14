@@ -1,5 +1,6 @@
 use crate::spec::{
-    Arch, CodeModel, RelocModel, Target, TargetMetadata, TargetOptions, TlsModel, base,
+    Arch, CodeModel, RelocModel, StandardLibrarySupport, Target, TargetMetadata, TargetOptions,
+    TargetStandardLibrarySupport, TlsModel, base,
 };
 
 pub(crate) fn target() -> Target {
@@ -9,7 +10,10 @@ pub(crate) fn target() -> Target {
             description: Some("RISC-V Hermit".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 64,
         arch: Arch::RiscV64,

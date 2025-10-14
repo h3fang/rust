@@ -1,10 +1,16 @@
 use crate::spec::base::nto_qnx;
-use crate::spec::{Arch, Env, RustcAbi, StackProbeType, Target, TargetOptions, base};
+use crate::spec::{
+    Arch, Env, RustcAbi, StackProbeType, StandardLibrarySupport, Target, TargetOptions,
+    TargetStandardLibrarySupport, base,
+};
 
 pub(crate) fn target() -> Target {
     let mut meta = nto_qnx::meta();
     meta.description = Some("32-bit x86 QNX Neutrino 7.0 RTOS".into());
-    meta.std = Some(false);
+    meta.standard_library_support = Some(TargetStandardLibrarySupport {
+        supported: StandardLibrarySupport::Core,
+        default: StandardLibrarySupport::Core,
+    });
     Target {
         llvm_target: "i586-pc-unknown".into(),
         metadata: meta,

@@ -8,8 +8,8 @@
 //! Historically this target was known as `wasm32-wasi-preview1-threads`.
 
 use crate::spec::{
-    Arch, Cc, Env, LinkSelfContainedDefault, LinkerFlavor, Os, Target, TargetMetadata, base,
-    crt_objects,
+    Arch, Cc, Env, LinkSelfContainedDefault, LinkerFlavor, Os, StandardLibrarySupport, Target,
+    TargetMetadata, TargetStandardLibrarySupport, base, crt_objects,
 };
 
 pub(crate) fn target() -> Target {
@@ -69,7 +69,10 @@ pub(crate) fn target() -> Target {
             description: None,
             tier: Some(2),
             host_tools: Some(false),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 32,
         data_layout: "e-m:e-p:32:32-p10:8:8-p20:8:8-i64:64-i128:128-n32:64-S128-ni:1:10:20".into(),

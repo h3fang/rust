@@ -1,5 +1,6 @@
 use crate::spec::{
-    Abi, Arch, Cc, FloatAbi, LinkerFlavor, Lld, Target, TargetMetadata, TargetOptions, base,
+    Abi, Arch, Cc, FloatAbi, LinkerFlavor, Lld, StandardLibrarySupport, Target, TargetMetadata,
+    TargetOptions, TargetStandardLibrarySupport, base,
 };
 
 // This target if is for the Android v7a ABI in thumb mode with
@@ -19,7 +20,10 @@ pub(crate) fn target() -> Target {
             description: Some("Thumb2-mode ARMv7-A Android with NEON".into()),
             tier: Some(2),
             host_tools: Some(false),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 32,
         data_layout: "e-m:e-p:32:32-Fi8-i64:64-v128:64:128-a:0:32-n32-S64".into(),

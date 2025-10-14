@@ -1,7 +1,8 @@
 use rustc_abi::Endian;
 
 use crate::spec::{
-    Arch, Cc, LinkerFlavor, Lld, PanicStrategy, RelocModel, Target, TargetMetadata, TargetOptions,
+    Arch, Cc, LinkerFlavor, Lld, PanicStrategy, RelocModel, StandardLibrarySupport, Target,
+    TargetMetadata, TargetOptions, TargetStandardLibrarySupport,
 };
 
 pub(crate) fn target() -> Target {
@@ -12,7 +13,10 @@ pub(crate) fn target() -> Target {
             description: Some("MIPS32r2 BE Baremetal Softfloat".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: None, // ?
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Core,
+                StandardLibrarySupport::Core,
+            )), // ?
         },
         pointer_width: 32,
         arch: Arch::Mips,

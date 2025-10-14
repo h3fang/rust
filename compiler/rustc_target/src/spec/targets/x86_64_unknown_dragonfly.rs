@@ -1,4 +1,7 @@
-use crate::spec::{Arch, Cc, LinkerFlavor, Lld, StackProbeType, Target, TargetMetadata, base};
+use crate::spec::{
+    Arch, Cc, LinkerFlavor, Lld, StackProbeType, StandardLibrarySupport, Target, TargetMetadata,
+    TargetStandardLibrarySupport, base,
+};
 
 pub(crate) fn target() -> Target {
     let mut base = base::dragonfly::opts();
@@ -14,7 +17,10 @@ pub(crate) fn target() -> Target {
             description: Some("64-bit DragonFlyBSD".into()),
             tier: Some(3),
             host_tools: Some(true),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 64,
         data_layout:

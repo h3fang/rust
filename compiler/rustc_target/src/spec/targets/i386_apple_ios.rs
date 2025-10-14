@@ -1,5 +1,7 @@
 use crate::spec::base::apple::{Arch, TargetEnv, base};
-use crate::spec::{Os, Target, TargetMetadata, TargetOptions};
+use crate::spec::{
+    Os, StandardLibrarySupport, Target, TargetMetadata, TargetOptions, TargetStandardLibrarySupport,
+};
 
 pub(crate) fn target() -> Target {
     // i386-apple-ios is a simulator target, even though it isn't declared
@@ -11,7 +13,10 @@ pub(crate) fn target() -> Target {
             description: Some("x86 Apple iOS Simulator".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 32,
         data_layout: "e-m:o-p:32:32-p270:32:32-p271:32:32-p272:64:64-\

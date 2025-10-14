@@ -1,6 +1,6 @@
 use crate::spec::{
-    Arch, LinkSelfContainedDefault, LinkerFlavor, MergeFunctions, Os, PanicStrategy, Target,
-    TargetMetadata, TargetOptions,
+    Arch, LinkSelfContainedDefault, LinkerFlavor, MergeFunctions, Os, PanicStrategy,
+    StandardLibrarySupport, Target, TargetMetadata, TargetOptions, TargetStandardLibrarySupport,
 };
 
 pub(crate) fn target() -> Target {
@@ -12,7 +12,10 @@ pub(crate) fn target() -> Target {
             description: Some("--emit=asm generates PTX code that runs on NVIDIA GPUs".into()),
             tier: Some(2),
             host_tools: Some(false),
-            std: Some(false),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Core,
+                StandardLibrarySupport::Core,
+            )),
         },
         pointer_width: 64,
 

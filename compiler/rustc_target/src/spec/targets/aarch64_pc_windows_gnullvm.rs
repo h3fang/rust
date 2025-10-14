@@ -1,4 +1,7 @@
-use crate::spec::{Arch, Cc, FramePointer, LinkerFlavor, Lld, Target, TargetMetadata, base};
+use crate::spec::{
+    Arch, Cc, FramePointer, LinkerFlavor, Lld, StandardLibrarySupport, Target, TargetMetadata,
+    TargetStandardLibrarySupport, base,
+};
 
 pub(crate) fn target() -> Target {
     let mut base = base::windows_gnullvm::opts();
@@ -18,8 +21,11 @@ pub(crate) fn target() -> Target {
         metadata: TargetMetadata {
             description: Some("ARM64 MinGW (Windows 10+), LLVM ABI".into()),
             tier: Some(2),
-            host_tools: Some(true),
-            std: Some(true),
+            host_tools: Some(false),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 64,
         data_layout:

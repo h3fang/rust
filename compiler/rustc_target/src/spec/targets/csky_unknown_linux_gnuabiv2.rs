@@ -1,4 +1,7 @@
-use crate::spec::{Abi, Arch, Cc, LinkerFlavor, Lld, Target, TargetMetadata, TargetOptions, base};
+use crate::spec::{
+    Abi, Arch, Cc, LinkerFlavor, Lld, StandardLibrarySupport, Target, TargetMetadata,
+    TargetOptions, TargetStandardLibrarySupport, base,
+};
 
 // This target is for glibc Linux on Csky
 
@@ -10,7 +13,10 @@ pub(crate) fn target() -> Target {
             description: Some("C-SKY abiv2 Linux (little endian)".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: Some(true)
+                    standard_library_support: Some(TargetStandardLibrarySupport {
+            supported: StandardLibrarySupport::Std,
+            default: StandardLibrarySupport::Std,
+        }),
         },
         pointer_width: 32,
         data_layout: "e-m:e-S32-p:32:32-i32:32:32-i64:32:32-f32:32:32-f64:32:32-v64:32:32-v128:32:32-a:0:32-Fi32-n32".into(),

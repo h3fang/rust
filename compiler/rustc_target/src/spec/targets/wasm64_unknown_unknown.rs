@@ -7,7 +7,10 @@
 //! the standard library is available, most of it returns an error immediately
 //! (e.g. trying to create a TCP stream or something like that).
 
-use crate::spec::{Arch, Cc, LinkerFlavor, Os, Target, TargetMetadata, base};
+use crate::spec::{
+    Arch, Cc, LinkerFlavor, Os, StandardLibrarySupport, Target, TargetMetadata,
+    TargetStandardLibrarySupport, base,
+};
 
 pub(crate) fn target() -> Target {
     let mut options = base::wasm::options();
@@ -43,7 +46,10 @@ pub(crate) fn target() -> Target {
             description: Some("WebAssembly".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: None, // ?
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Core,
+                StandardLibrarySupport::Core,
+            )), // ?
         },
         pointer_width: 64,
         data_layout: "e-m:e-p:64:64-p10:8:8-p20:8:8-i64:64-i128:128-n32:64-S128-ni:1:10:20".into(),

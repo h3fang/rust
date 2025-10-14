@@ -1,5 +1,6 @@
 use crate::spec::{
-    Arch, Cc, LinkerFlavor, Lld, StackProbeType, Target, TargetMetadata, TargetOptions, base,
+    Arch, Cc, LinkerFlavor, Lld, StackProbeType, StandardLibrarySupport, Target, TargetMetadata,
+    TargetOptions, TargetStandardLibrarySupport, base,
 };
 
 pub(crate) fn target() -> Target {
@@ -9,7 +10,10 @@ pub(crate) fn target() -> Target {
             description: Some("64-bit Unikraft with musl 1.2.5".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 64,
         arch: Arch::X86_64,

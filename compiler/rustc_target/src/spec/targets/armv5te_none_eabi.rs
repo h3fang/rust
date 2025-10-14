@@ -1,6 +1,9 @@
 //! Targets the ARMv5TE, with code as `a32` code by default.
 
-use crate::spec::{Abi, Arch, FloatAbi, Target, TargetMetadata, TargetOptions, base, cvs};
+use crate::spec::{
+    Abi, Arch, FloatAbi, StandardLibrarySupport, Target, TargetMetadata, TargetOptions,
+    TargetStandardLibrarySupport, base, cvs,
+};
 
 pub(crate) fn target() -> Target {
     Target {
@@ -9,7 +12,10 @@ pub(crate) fn target() -> Target {
             description: Some("Bare Armv5TE".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: Some(false),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Core,
+                StandardLibrarySupport::Core,
+            )),
         },
         pointer_width: 32,
         arch: Arch::Arm,

@@ -1,4 +1,7 @@
-use crate::spec::{Arch, FramePointer, Target, TargetMetadata, base};
+use crate::spec::{
+    Arch, FramePointer, StandardLibrarySupport, Target, TargetMetadata,
+    TargetStandardLibrarySupport, base,
+};
 
 pub(crate) fn target() -> Target {
     let mut base = base::windows_msvc::opts();
@@ -17,7 +20,10 @@ pub(crate) fn target() -> Target {
             description: Some("ARM64 Windows MSVC".into()),
             tier: Some(1),
             host_tools: Some(true),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 64,
         data_layout:

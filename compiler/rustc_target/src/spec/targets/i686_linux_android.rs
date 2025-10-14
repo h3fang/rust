@@ -1,5 +1,6 @@
 use crate::spec::{
-    Arch, RustcAbi, SanitizerSet, StackProbeType, Target, TargetMetadata, TargetOptions, base,
+    Arch, RustcAbi, SanitizerSet, StackProbeType, StandardLibrarySupport, Target, TargetMetadata,
+    TargetOptions, TargetStandardLibrarySupport, base,
 };
 
 // See https://developer.android.com/ndk/guides/abis.html#x86
@@ -22,7 +23,10 @@ pub(crate) fn target() -> Target {
             description: Some("32-bit x86 Android".into()),
             tier: Some(2),
             host_tools: Some(false),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 32,
         data_layout: "e-m:e-p:32:32-p270:32:32-p271:32:32-p272:64:64-\

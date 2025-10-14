@@ -1,4 +1,7 @@
-use crate::spec::{Arch, Cc, LinkerFlavor, Lld, Os, Target, TargetMetadata, TargetOptions, cvs};
+use crate::spec::{
+    Arch, Cc, LinkerFlavor, Lld, Os, StandardLibrarySupport, Target, TargetMetadata, TargetOptions,
+    TargetStandardLibrarySupport, cvs,
+};
 
 pub(crate) fn target() -> Target {
     let mut base = TargetOptions::default();
@@ -10,7 +13,10 @@ pub(crate) fn target() -> Target {
             description: Some("Hexagon QuRT".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: Some(false),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Core,
+                StandardLibrarySupport::Core,
+            )),
         },
         pointer_width: 32,
         data_layout: "\

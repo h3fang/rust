@@ -1,4 +1,7 @@
-use crate::spec::{Abi, Arch, FloatAbi, RelocModel, Target, TargetMetadata, TargetOptions, base};
+use crate::spec::{
+    Abi, Arch, FloatAbi, RelocModel, StandardLibrarySupport, Target, TargetMetadata, TargetOptions,
+    TargetStandardLibrarySupport, base,
+};
 
 pub(crate) fn target() -> Target {
     let base = base::solid::opts();
@@ -8,7 +11,10 @@ pub(crate) fn target() -> Target {
             description: Some("Arm SOLID with TOPPERS/ASP3".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 32,
         data_layout: "e-m:e-p:32:32-Fi8-i64:64-v128:64:128-a:0:32-n32-S64".into(),

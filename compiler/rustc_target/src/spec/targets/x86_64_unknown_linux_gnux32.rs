@@ -1,4 +1,7 @@
-use crate::spec::{Abi, Arch, Cc, LinkerFlavor, Lld, StackProbeType, Target, TargetMetadata, base};
+use crate::spec::{
+    Abi, Arch, Cc, LinkerFlavor, Lld, StackProbeType, StandardLibrarySupport, Target,
+    TargetMetadata, TargetStandardLibrarySupport, base,
+};
 
 pub(crate) fn target() -> Target {
     let mut base = base::linux_gnu::opts();
@@ -18,7 +21,10 @@ pub(crate) fn target() -> Target {
             description: Some("64-bit Linux (x32 ABI) (kernel 4.15, glibc 2.27)".into()),
             tier: Some(2),
             host_tools: Some(false),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 32,
         data_layout: "e-m:e-p:32:32-p270:32:32-p271:32:32-p272:64:64-\

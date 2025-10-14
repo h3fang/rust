@@ -1,5 +1,7 @@
 use crate::spec::base::apple::{Arch, TargetEnv, base};
-use crate::spec::{Os, Target, TargetMetadata, TargetOptions};
+use crate::spec::{
+    Os, StandardLibrarySupport, Target, TargetMetadata, TargetOptions, TargetStandardLibrarySupport,
+};
 
 pub(crate) fn target() -> Target {
     let (opts, llvm_target, arch) = base(Os::WatchOs, Arch::Arm64_32, TargetEnv::Normal);
@@ -9,7 +11,10 @@ pub(crate) fn target() -> Target {
             description: Some("ARM64 Apple watchOS with 32-bit pointers".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 32,
         data_layout:

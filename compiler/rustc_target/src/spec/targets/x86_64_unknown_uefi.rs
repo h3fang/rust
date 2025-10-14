@@ -7,7 +7,10 @@
 
 use rustc_abi::{CanonAbi, X86Call};
 
-use crate::spec::{Arch, RustcAbi, Target, TargetMetadata, base};
+use crate::spec::{
+    Arch, RustcAbi, StandardLibrarySupport, Target, TargetMetadata, TargetStandardLibrarySupport,
+    base,
+};
 
 pub(crate) fn target() -> Target {
     let mut base = base::uefi_msvc::opts();
@@ -35,7 +38,10 @@ pub(crate) fn target() -> Target {
             description: Some("64-bit UEFI".into()),
             tier: Some(2),
             host_tools: Some(false),
-            std: None, // ?
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Core,
+                StandardLibrarySupport::Core,
+            )), // ?
         },
         pointer_width: 64,
         data_layout:

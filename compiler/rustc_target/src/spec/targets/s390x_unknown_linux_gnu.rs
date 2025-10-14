@@ -1,6 +1,9 @@
 use rustc_abi::{Align, Endian};
 
-use crate::spec::{Arch, SanitizerSet, StackProbeType, Target, TargetMetadata, base};
+use crate::spec::{
+    Arch, SanitizerSet, StackProbeType, StandardLibrarySupport, Target, TargetMetadata,
+    TargetStandardLibrarySupport, base,
+};
 
 pub(crate) fn target() -> Target {
     let mut base = base::linux_gnu::opts();
@@ -19,7 +22,10 @@ pub(crate) fn target() -> Target {
             description: Some("S390x Linux (kernel 3.2, glibc 2.17)".into()),
             tier: Some(2),
             host_tools: Some(true),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 64,
         data_layout: "E-m:e-i1:8:16-i8:8:16-i64:64-f128:64-v128:64-a:8:16-n32:64".into(),

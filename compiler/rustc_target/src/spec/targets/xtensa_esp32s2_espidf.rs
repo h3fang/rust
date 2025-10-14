@@ -1,7 +1,10 @@
 use rustc_abi::Endian;
 
 use crate::spec::base::xtensa;
-use crate::spec::{Arch, Env, Os, Target, TargetMetadata, TargetOptions, cvs};
+use crate::spec::{
+    Arch, Env, Os, StandardLibrarySupport, Target, TargetMetadata, TargetOptions,
+    TargetStandardLibrarySupport, cvs,
+};
 
 pub(crate) fn target() -> Target {
     Target {
@@ -9,7 +12,15 @@ pub(crate) fn target() -> Target {
         pointer_width: 32,
         data_layout: "e-m:e-p:32:32-v1:8:8-i64:64-i128:128-n32".into(),
         arch: Arch::Xtensa,
-        metadata: TargetMetadata { description: None, tier: None, host_tools: None, std: None },
+        metadata: TargetMetadata {
+            description: None,
+            tier: None,
+            host_tools: None,
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Core,
+                StandardLibrarySupport::Core,
+            )),
+        },
 
         options: TargetOptions {
             endian: Endian::Little,

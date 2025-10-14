@@ -1,5 +1,7 @@
 use crate::spec::base::apple::{Arch, TargetEnv, base};
-use crate::spec::{Os, Target, TargetMetadata, TargetOptions};
+use crate::spec::{
+    Os, StandardLibrarySupport, Target, TargetMetadata, TargetOptions, TargetStandardLibrarySupport,
+};
 
 pub(crate) fn target() -> Target {
     let (opts, llvm_target, arch) = base(Os::IOs, Arch::Armv7s, TargetEnv::Normal);
@@ -9,7 +11,10 @@ pub(crate) fn target() -> Target {
             description: Some("ARMv7-A Apple-A6 Apple iOS".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 32,
         data_layout: "e-m:o-p:32:32-Fi8-f64:32:64-v64:32:64-v128:32:128-a:0:32-n32-S32".into(),

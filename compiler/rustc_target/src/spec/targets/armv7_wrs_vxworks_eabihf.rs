@@ -1,4 +1,7 @@
-use crate::spec::{Abi, Arch, FloatAbi, Target, TargetMetadata, TargetOptions, base};
+use crate::spec::{
+    Abi, Arch, FloatAbi, StandardLibrarySupport, Target, TargetMetadata, TargetOptions,
+    TargetStandardLibrarySupport, base,
+};
 
 pub(crate) fn target() -> Target {
     Target {
@@ -7,7 +10,10 @@ pub(crate) fn target() -> Target {
             description: Some("Armv7-A for VxWorks".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: None, // ?
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Core,
+                StandardLibrarySupport::Core,
+            )), // ?
         },
         pointer_width: 32,
         data_layout: "e-m:e-p:32:32-Fi8-i64:64-v128:64:128-a:0:32-n32-S64".into(),

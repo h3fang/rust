@@ -1,4 +1,6 @@
-use crate::spec::{Arch, Cc, LinkerFlavor, Lld, Target, base};
+use crate::spec::{
+    Arch, Cc, LinkerFlavor, Lld, StandardLibrarySupport, Target, TargetStandardLibrarySupport, base,
+};
 
 pub(crate) fn target() -> Target {
     let mut base = base::helenos::opts();
@@ -14,7 +16,10 @@ pub(crate) fn target() -> Target {
             description: Some("64-bit HelenOS".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 64,
         data_layout:

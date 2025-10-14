@@ -8,7 +8,7 @@
 //! all component-model-level imports anyway. Over time the imports of the
 //! standard library will change to WASIp3.
 
-use crate::spec::{Env, Target};
+use crate::spec::{Env, StandardLibrarySupport, Target, TargetStandardLibrarySupport};
 
 pub(crate) fn target() -> Target {
     // As of now WASIp3 is a lightly edited wasip2 target, so start with that
@@ -19,7 +19,10 @@ pub(crate) fn target() -> Target {
         description: Some("WebAssembly".into()),
         tier: Some(3),
         host_tools: Some(false),
-        std: Some(true),
+        standard_library_support: Some(TargetStandardLibrarySupport::new(
+            StandardLibrarySupport::Std,
+            StandardLibrarySupport::Std,
+        )),
     };
     target.options.env = Env::P3;
     target

@@ -1,4 +1,7 @@
-use crate::spec::{Arch, StackProbeType, Target, TargetMetadata, TargetOptions, base};
+use crate::spec::{
+    Arch, StackProbeType, StandardLibrarySupport, Target, TargetMetadata, TargetOptions,
+    TargetStandardLibrarySupport, base,
+};
 
 pub(crate) fn target() -> Target {
     Target {
@@ -7,7 +10,10 @@ pub(crate) fn target() -> Target {
             description: Some("ARM64 Hermit".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: Some(true),
+        standard_library_support: Some(TargetStandardLibrarySupport {
+            supported: StandardLibrarySupport::Std,
+            default: StandardLibrarySupport::Std,
+        }),
         },
         pointer_width: 64,
         arch: Arch::AArch64,

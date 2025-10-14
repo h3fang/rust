@@ -1,5 +1,6 @@
 use crate::spec::{
-    Abi, Arch, FramePointer, StackProbeType, Target, TargetMetadata, TargetOptions, base,
+    Abi, Arch, FramePointer, StackProbeType, StandardLibrarySupport, Target, TargetMetadata,
+    TargetOptions, TargetStandardLibrarySupport, base,
 };
 
 pub(crate) fn target() -> Target {
@@ -9,7 +10,10 @@ pub(crate) fn target() -> Target {
             description: Some("ARM64 Linux (ILP32 ABI)".into()),
             tier: Some(3),
             host_tools: Some(true),
-            std: Some(true),
+        standard_library_support: Some(TargetStandardLibrarySupport {
+            supported: StandardLibrarySupport::Std,
+            default: StandardLibrarySupport::Std,
+        }),
         },
         pointer_width: 32,
         data_layout: "e-m:e-p:32:32-p270:32:32-p271:32:32-p272:64:64-i8:8:32-i16:16:32-i64:64-i128:128-n32:64-S128-Fn32".into(),

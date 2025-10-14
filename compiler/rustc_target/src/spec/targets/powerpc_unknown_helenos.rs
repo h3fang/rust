@@ -1,6 +1,8 @@
 use rustc_abi::Endian;
 
-use crate::spec::{Arch, Target, TargetMetadata, base};
+use crate::spec::{
+    Arch, StandardLibrarySupport, Target, TargetMetadata, TargetStandardLibrarySupport, base,
+};
 
 pub(crate) fn target() -> Target {
     let mut base = base::helenos::opts();
@@ -14,7 +16,10 @@ pub(crate) fn target() -> Target {
             description: Some("PowerPC HelenOS".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 32,
         data_layout: "E-m:e-p:32:32-Fn32-i64:64-n32".into(),

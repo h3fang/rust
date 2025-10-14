@@ -1,4 +1,7 @@
-use crate::spec::{Arch, Cc, LinkerFlavor, Lld, RelocModel, Target, TargetOptions};
+use crate::spec::{
+    Arch, Cc, LinkerFlavor, Lld, RelocModel, StandardLibrarySupport, Target, TargetOptions,
+    TargetStandardLibrarySupport,
+};
 
 pub(crate) fn target() -> Target {
     Target {
@@ -7,7 +10,10 @@ pub(crate) fn target() -> Target {
             description: None,
             tier: Some(3),
             host_tools: Some(false),
-            std: Some(false),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Core,
+                StandardLibrarySupport::Core,
+            )),
         },
         data_layout: "e-P1-p:16:8-i8:8-i16:8-i32:8-i64:8-f32:8-f64:8-n8:16-a:8".into(),
         llvm_target: "avr-unknown-unknown".into(),

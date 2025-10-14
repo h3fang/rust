@@ -1,6 +1,6 @@
 use crate::spec::{
-    Abi, Arch, Cc, Env, FloatAbi, LinkerFlavor, Lld, Os, RelocModel, Target, TargetMetadata,
-    TargetOptions, cvs,
+    Abi, Arch, Cc, Env, FloatAbi, LinkerFlavor, Lld, Os, RelocModel, StandardLibrarySupport,
+    Target, TargetMetadata, TargetOptions, TargetStandardLibrarySupport, cvs,
 };
 
 /// A base target for Nintendo 3DS devices using the devkitARM toolchain.
@@ -18,7 +18,10 @@ pub(crate) fn target() -> Target {
             description: Some("Armv6K Nintendo 3DS, Horizon (Requires devkitARM toolchain)".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: None, // ?
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Core,
+                StandardLibrarySupport::Core,
+            )), // ?
         },
         pointer_width: 32,
         data_layout: "e-m:e-p:32:32-Fi8-i64:64-v128:64:128-a:0:32-n32-S64".into(),

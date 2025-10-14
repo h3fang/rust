@@ -1,5 +1,8 @@
 use crate::spec::base::apple::{Arch, TargetEnv, base};
-use crate::spec::{Os, SanitizerSet, Target, TargetMetadata, TargetOptions};
+use crate::spec::{
+    Os, SanitizerSet, StandardLibrarySupport, Target, TargetMetadata, TargetOptions,
+    TargetStandardLibrarySupport,
+};
 
 pub(crate) fn target() -> Target {
     let (opts, llvm_target, arch) = base(Os::MacOs, Arch::Arm64e, TargetEnv::Normal);
@@ -9,7 +12,10 @@ pub(crate) fn target() -> Target {
             description: Some("ARM64e Apple Darwin".into()),
             tier: Some(3),
             host_tools: Some(true),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 64,
         data_layout: "e-m:o-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-n32:64-S128-Fn32"

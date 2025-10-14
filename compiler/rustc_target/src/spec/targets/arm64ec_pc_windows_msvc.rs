@@ -1,5 +1,6 @@
 use crate::spec::{
-    Arch, FramePointer, LinkerFlavor, Lld, Target, TargetMetadata, add_link_args, base,
+    Arch, FramePointer, LinkerFlavor, Lld, StandardLibrarySupport, Target, TargetMetadata,
+    TargetStandardLibrarySupport, add_link_args, base,
 };
 
 pub(crate) fn target() -> Target {
@@ -24,7 +25,10 @@ pub(crate) fn target() -> Target {
             description: Some("Arm64EC Windows MSVC".into()),
             tier: Some(2),
             host_tools: Some(false),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 64,
         data_layout:

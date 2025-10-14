@@ -1,6 +1,8 @@
 use rustc_abi::Endian;
 
-use crate::spec::{Arch, Target, TargetMetadata, base};
+use crate::spec::{
+    Arch, StandardLibrarySupport, Target, TargetMetadata, TargetStandardLibrarySupport, base,
+};
 
 pub(crate) fn target() -> Target {
     let mut base = base::linux_gnu::opts();
@@ -14,7 +16,10 @@ pub(crate) fn target() -> Target {
             description: Some("SPARC Linux (kernel 4.4, glibc 2.23)".into()),
             tier: Some(2),
             host_tools: Some(false),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 64,
         data_layout: "E-m:e-i64:64-i128:128-n32:64-S128".into(),

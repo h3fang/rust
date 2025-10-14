@@ -6,7 +6,8 @@
 
 use crate::spec::{
     Arch, Cc, CodeModel, LinkerFlavor, Lld, PanicStrategy, RelroLevel, RustcAbi, SanitizerSet,
-    StackProbeType, Target, TargetMetadata, TargetOptions,
+    StackProbeType, StandardLibrarySupport, Target, TargetMetadata, TargetOptions,
+    TargetStandardLibrarySupport,
 };
 
 pub(crate) fn target() -> Target {
@@ -34,7 +35,10 @@ pub(crate) fn target() -> Target {
             description: Some("Freestanding/bare-metal x86_64 softfloat".into()),
             tier: Some(2),
             host_tools: Some(false),
-            std: Some(false),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Core,
+                StandardLibrarySupport::Core,
+            )),
         },
         pointer_width: 64,
         data_layout:

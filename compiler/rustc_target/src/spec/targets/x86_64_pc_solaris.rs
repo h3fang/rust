@@ -1,6 +1,6 @@
 use crate::spec::{
-    Arch, Cc, LinkerFlavor, SanitizerSet, StackProbeType, Target, TargetMetadata, TargetOptions,
-    base,
+    Arch, Cc, LinkerFlavor, SanitizerSet, StackProbeType, StandardLibrarySupport, Target,
+    TargetMetadata, TargetOptions, TargetStandardLibrarySupport, base,
 };
 
 pub(crate) fn target() -> Target {
@@ -20,8 +20,11 @@ pub(crate) fn target() -> Target {
         metadata: TargetMetadata {
             description: Some("64-bit Solaris 11.4".into()),
             tier: Some(2),
-            host_tools: Some(true),
-            std: Some(true),
+            host_tools: Some(false),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 64,
         data_layout:

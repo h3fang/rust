@@ -1,6 +1,6 @@
 use crate::spec::{
-    Arch, Cc, LinkerFlavor, Lld, RustcAbi, StackProbeType, Target, TargetMetadata, TargetOptions,
-    base,
+    Arch, Cc, LinkerFlavor, Lld, RustcAbi, StackProbeType, StandardLibrarySupport, Target,
+    TargetMetadata, TargetOptions, TargetStandardLibrarySupport, base,
 };
 
 pub(crate) fn target() -> Target {
@@ -17,7 +17,10 @@ pub(crate) fn target() -> Target {
             description: Some("NetBSD/i386 with SSE2".into()),
             tier: Some(3),
             host_tools: Some(true),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 32,
         data_layout: "e-m:e-p:32:32-p270:32:32-p271:32:32-p272:64:64-\

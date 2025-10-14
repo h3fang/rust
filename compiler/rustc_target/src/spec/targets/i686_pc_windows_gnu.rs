@@ -1,5 +1,6 @@
 use crate::spec::{
-    Arch, Cc, FramePointer, LinkerFlavor, Lld, RustcAbi, Target, TargetMetadata, base, crt_objects,
+    Arch, Cc, FramePointer, LinkerFlavor, Lld, RustcAbi, StandardLibrarySupport, Target,
+    TargetMetadata, TargetStandardLibrarySupport, base, crt_objects,
 };
 
 pub(crate) fn target() -> Target {
@@ -28,7 +29,10 @@ pub(crate) fn target() -> Target {
             description: Some("32-bit MinGW (Windows 10+)".into()),
             tier: Some(2),
             host_tools: Some(true),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 32,
         data_layout: "e-m:x-p:32:32-p270:32:32-p271:32:32-p272:64:64-\

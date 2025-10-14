@@ -1,4 +1,7 @@
-use crate::spec::{Arch, Cc, LinkerFlavor, Target, TargetMetadata, base};
+use crate::spec::{
+    Arch, Cc, LinkerFlavor, StandardLibrarySupport, Target, TargetMetadata,
+    TargetStandardLibrarySupport, base,
+};
 
 pub(crate) fn target() -> Target {
     let mut base = base::aix::opts();
@@ -14,7 +17,10 @@ pub(crate) fn target() -> Target {
             description: Some("64-bit AIX (7.2 and newer)".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: None, // ?
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Core,
+                StandardLibrarySupport::Core,
+            )), // ?
         },
         pointer_width: 64,
         data_layout: "E-m:a-Fi64-i64:64-i128:128-n32:64-f64:32:64-S128-v256:256:256-v512:512:512"

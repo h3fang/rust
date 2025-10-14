@@ -1,5 +1,6 @@
 use crate::spec::{
-    Arch, CodeModel, LinkSelfContainedDefault, RelocModel, RelroLevel, Target, base,
+    Arch, CodeModel, LinkSelfContainedDefault, RelocModel, RelroLevel, StandardLibrarySupport,
+    Target, TargetStandardLibrarySupport, base,
 };
 
 pub(crate) fn target() -> Target {
@@ -26,7 +27,10 @@ pub(crate) fn target() -> Target {
             description: Some("Motor OS".into()),
             tier: Some(3),
             host_tools: None,
-            std: None,
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Core,
+                StandardLibrarySupport::Core,
+            )),
         },
         pointer_width: 64,
         data_layout:

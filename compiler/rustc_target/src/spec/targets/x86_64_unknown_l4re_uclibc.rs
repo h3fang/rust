@@ -1,4 +1,7 @@
-use crate::spec::{Arch, PanicStrategy, Target, TargetMetadata, base};
+use crate::spec::{
+    Arch, PanicStrategy, StandardLibrarySupport, Target, TargetMetadata,
+    TargetStandardLibrarySupport, base,
+};
 
 pub(crate) fn target() -> Target {
     let mut base = base::l4re::opts();
@@ -13,7 +16,10 @@ pub(crate) fn target() -> Target {
             description: None,
             tier: Some(3),
             host_tools: Some(false),
-            std: None, // ?
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Core,
+                StandardLibrarySupport::Core,
+            )), // ?
         },
         pointer_width: 64,
         data_layout:

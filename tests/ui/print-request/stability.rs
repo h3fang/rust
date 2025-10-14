@@ -29,6 +29,9 @@
 //@ revisions: target_spec_json
 //@[target_spec_json] compile-flags: --print=target-spec-json
 
+//@ revisions: target_standard_library_support
+//@[target_standard_library_support] compile-flags: --print=target-standard-library-support
+
 // =======================
 // Stable print requests
 // =======================
@@ -110,3 +113,4 @@ fn main() {}
 //[check_cfg]~? ERROR the `-Z unstable-options` flag must also be passed to enable the `check-cfg` print option
 //[supported_crate_types]~? ERROR the `-Z unstable-options` flag must also be passed to enable the `supported-crate-types` print option
 //[target_spec_json]~? ERROR the `-Z unstable-options` flag must also be passed to enable the `target-spec-json` print option
+//[target_standard_library_support]~? ERROR the `-Z unstable-options` flag must also be passed to enable the `target-standard-library-support` print option

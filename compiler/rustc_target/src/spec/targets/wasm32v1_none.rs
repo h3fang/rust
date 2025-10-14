@@ -12,7 +12,10 @@
 //! nightly Rust feature `-Zbuild-std`. This target is for people who want to
 //! use stable Rust, and target a stable set pf WebAssembly features.
 
-use crate::spec::{Arch, Cc, LinkerFlavor, Os, Target, TargetMetadata, base};
+use crate::spec::{
+    Arch, Cc, LinkerFlavor, Os, StandardLibrarySupport, Target, TargetMetadata,
+    TargetStandardLibrarySupport, base,
+};
 
 pub(crate) fn target() -> Target {
     let mut options = base::wasm::options();
@@ -47,7 +50,10 @@ pub(crate) fn target() -> Target {
             description: Some("WebAssembly".into()),
             tier: Some(2),
             host_tools: Some(false),
-            std: Some(false),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Core,
+                StandardLibrarySupport::Core,
+            )),
         },
         pointer_width: 32,
         data_layout: "e-m:e-p:32:32-p10:8:8-p20:8:8-i64:64-i128:128-n32:64-S128-ni:1:10:20".into(),

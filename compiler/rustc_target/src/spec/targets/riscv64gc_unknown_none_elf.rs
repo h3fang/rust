@@ -1,6 +1,6 @@
 use crate::spec::{
-    Arch, Cc, CodeModel, LinkerFlavor, Lld, PanicStrategy, RelocModel, SanitizerSet, Target,
-    TargetMetadata, TargetOptions,
+    Arch, Cc, CodeModel, LinkerFlavor, Lld, PanicStrategy, RelocModel, SanitizerSet,
+    StandardLibrarySupport, Target, TargetMetadata, TargetOptions, TargetStandardLibrarySupport,
 };
 
 pub(crate) fn target() -> Target {
@@ -10,7 +10,10 @@ pub(crate) fn target() -> Target {
             description: Some("Bare RISC-V (RV64IMAFDC ISA)".into()),
             tier: Some(2),
             host_tools: Some(false),
-            std: Some(false),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Core,
+                StandardLibrarySupport::Core,
+            )),
         },
         llvm_target: "riscv64".into(),
         pointer_width: 64,

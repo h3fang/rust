@@ -1,4 +1,7 @@
-use crate::spec::{Arch, SanitizerSet, StackProbeType, Target, base};
+use crate::spec::{
+    Arch, SanitizerSet, StackProbeType, StandardLibrarySupport, Target,
+    TargetStandardLibrarySupport, base,
+};
 
 pub(crate) fn target() -> Target {
     let mut base = base::lynxos178::opts();
@@ -23,7 +26,10 @@ pub(crate) fn target() -> Target {
             description: Some("LynxOS-178".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: Some(false),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Core,
+                StandardLibrarySupport::Core,
+            )),
         },
         pointer_width: 64,
         data_layout:

@@ -1,7 +1,10 @@
 // This defines the aarch64 target for UEFI systems as described in the UEFI specification. See the
 // uefi-base module for generic UEFI options.
 
-use crate::spec::{Arch, LinkerFlavor, Lld, Target, TargetMetadata, base};
+use crate::spec::{
+    Arch, LinkerFlavor, Lld, StandardLibrarySupport, Target, TargetMetadata,
+    TargetStandardLibrarySupport, base,
+};
 
 pub(crate) fn target() -> Target {
     let mut base = base::uefi_msvc::opts();
@@ -16,7 +19,10 @@ pub(crate) fn target() -> Target {
             description: Some("ARM64 UEFI".into()),
             tier: Some(2),
             host_tools: Some(false),
-            std: None, // ?
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Core,
+                StandardLibrarySupport::Core,
+            )),
         },
         pointer_width: 64,
         data_layout:

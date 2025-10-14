@@ -1,5 +1,6 @@
 use crate::spec::{
-    Arch, Cc, FramePointer, LinkerFlavor, Lld, RustcAbi, Target, TargetMetadata, base,
+    Arch, Cc, FramePointer, LinkerFlavor, Lld, RustcAbi, StandardLibrarySupport, Target,
+    TargetMetadata, TargetStandardLibrarySupport, base,
 };
 
 pub(crate) fn target() -> Target {
@@ -23,7 +24,10 @@ pub(crate) fn target() -> Target {
             description: None,
             tier: Some(3),
             host_tools: Some(false),
-            std: None, // ?
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Core,
+                StandardLibrarySupport::Core,
+            )), // ?
         },
         pointer_width: 32,
         data_layout: "e-m:x-p:32:32-p270:32:32-p271:32:32-p272:64:64-\

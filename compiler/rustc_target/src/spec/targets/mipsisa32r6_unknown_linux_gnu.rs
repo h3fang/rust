@@ -1,6 +1,9 @@
 use rustc_abi::Endian;
 
-use crate::spec::{Arch, Target, TargetMetadata, TargetOptions, base};
+use crate::spec::{
+    Arch, StandardLibrarySupport, Target, TargetMetadata, TargetOptions,
+    TargetStandardLibrarySupport, base,
+};
 
 pub(crate) fn target() -> Target {
     Target {
@@ -9,7 +12,10 @@ pub(crate) fn target() -> Target {
             description: Some("32-bit MIPS Release 6 Big Endian".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 32,
         data_layout: "E-m:m-p:32:32-i8:8:32-i16:16:32-i64:64-n32-S64".into(),

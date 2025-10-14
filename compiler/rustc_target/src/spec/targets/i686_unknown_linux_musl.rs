@@ -1,6 +1,6 @@
 use crate::spec::{
-    Arch, Cc, FramePointer, LinkerFlavor, Lld, RustcAbi, StackProbeType, Target, TargetMetadata,
-    base,
+    Arch, Cc, FramePointer, LinkerFlavor, Lld, RustcAbi, StackProbeType, StandardLibrarySupport,
+    Target, TargetMetadata, TargetStandardLibrarySupport, base,
 };
 
 pub(crate) fn target() -> Target {
@@ -35,7 +35,10 @@ pub(crate) fn target() -> Target {
             description: Some("32-bit Linux with musl 1.2.5".into()),
             tier: Some(2),
             host_tools: Some(false),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 32,
         data_layout: "e-m:e-p:32:32-p270:32:32-p271:32:32-p272:64:64-\

@@ -1,6 +1,6 @@
 use crate::spec::{
-    Arch, LinkArgs, LinkerFlavor, Os, PanicStrategy, RelocModel, Target, TargetMetadata,
-    TargetOptions, base, cvs,
+    Arch, LinkArgs, LinkerFlavor, Os, PanicStrategy, RelocModel, StandardLibrarySupport, Target,
+    TargetMetadata, TargetOptions, TargetStandardLibrarySupport, base, cvs,
 };
 
 pub(crate) fn target() -> Target {
@@ -30,7 +30,10 @@ pub(crate) fn target() -> Target {
             description: Some("WebAssembly via Emscripten".into()),
             tier: Some(2),
             host_tools: Some(false),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 32,
         data_layout: "e-m:e-p:32:32-p10:8:8-p20:8:8-i64:64-i128:128-f128:64-n32:64-S128-ni:1:10:20"

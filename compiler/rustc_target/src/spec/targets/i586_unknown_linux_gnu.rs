@@ -1,4 +1,4 @@
-use crate::spec::Target;
+use crate::spec::{StandardLibrarySupport, Target, TargetStandardLibrarySupport};
 
 pub(crate) fn target() -> Target {
     let mut base = super::i686_unknown_linux_gnu::target();
@@ -9,7 +9,10 @@ pub(crate) fn target() -> Target {
         description: Some("32-bit Linux (kernel 3.2, glibc 2.17+)".into()),
         tier: Some(2),
         host_tools: Some(false),
-        std: Some(true),
+        standard_library_support: Some(TargetStandardLibrarySupport::new(
+            StandardLibrarySupport::Std,
+            StandardLibrarySupport::Std,
+        )),
     };
     base
 }

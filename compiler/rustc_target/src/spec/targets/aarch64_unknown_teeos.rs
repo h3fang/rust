@@ -1,4 +1,7 @@
-use crate::spec::{Arch, StackProbeType, Target, TargetMetadata, base};
+use crate::spec::{
+    Arch, StackProbeType, StandardLibrarySupport, Target, TargetMetadata,
+    TargetStandardLibrarySupport, base,
+};
 
 pub(crate) fn target() -> Target {
     let mut base = base::teeos::opts();
@@ -12,7 +15,10 @@ pub(crate) fn target() -> Target {
             description: Some("ARM64 TEEOS".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: None, // ?
+                    standard_library_support: Some(TargetStandardLibrarySupport {
+            supported: StandardLibrarySupport::Core,
+            default: StandardLibrarySupport::Core,
+        }),
         },
         pointer_width: 64,
         data_layout: "e-m:e-p270:32:32-p271:32:32-p272:64:64-i8:8:32-i16:16:32-i64:64-i128:128-n32:64-S128-Fn32".into(),

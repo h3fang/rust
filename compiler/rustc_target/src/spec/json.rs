@@ -12,7 +12,7 @@ use super::{
     TargetKind, TargetOptions, TargetWarnings, TlsModel,
 };
 use crate::json::{Json, ToJson};
-use crate::spec::AbiMap;
+use crate::spec::{AbiMap, TargetStandardLibrarySupport};
 
 impl Target {
     /// Loads a target descriptor from a JSON object.
@@ -38,7 +38,14 @@ impl Target {
             base.metadata.description = metadata.description;
             base.metadata.tier = metadata.tier.filter(|tier| (1..=3).contains(tier));
             base.metadata.host_tools = metadata.host_tools;
-            base.metadata.std = metadata.std;
+            base.metadata.standard_library_support = match metadata.standard_library_support {
+                Some(json) => {
+                    let supported = json.supported.map(|s| s.as_ref().into()).unwrap_or_default();
+                    let default = json.default.map(|s| s.as_ref().into()).unwrap_or_default();
+                    Some(TargetStandardLibrarySupport { supported, default })
+                }
+                None => None,
+            };
         }
 
         let alignment_error = |field_name: &str, error: AlignFromBytesError| -> String {
@@ -480,11 +487,17 @@ impl schemars::JsonSchema for ExternAbiWrapper {
 }
 
 #[derive(serde_derive::Deserialize, schemars::JsonSchema)]
+pub(crate) struct TargetSpecJsonStdSupport {
+    pub supported: Option<StaticCow<str>>,
+    pub default: Option<StaticCow<str>>,
+}
+
+#[derive(serde_derive::Deserialize, schemars::JsonSchema)]
 struct TargetSpecJsonMetadata {
     description: Option<StaticCow<str>>,
     tier: Option<u64>,
     host_tools: Option<bool>,
-    std: Option<bool>,
+    standard_library_support: Option<TargetSpecJsonStdSupport>,
 }
 
 #[derive(serde_derive::Deserialize, schemars::JsonSchema)]

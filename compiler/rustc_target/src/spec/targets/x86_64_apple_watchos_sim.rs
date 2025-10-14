@@ -1,5 +1,7 @@
 use crate::spec::base::apple::{Arch, TargetEnv, base};
-use crate::spec::{Os, Target, TargetMetadata, TargetOptions};
+use crate::spec::{
+    Os, StandardLibrarySupport, Target, TargetMetadata, TargetOptions, TargetStandardLibrarySupport,
+};
 
 pub(crate) fn target() -> Target {
     let (opts, llvm_target, arch) = base(Os::WatchOs, Arch::X86_64, TargetEnv::Simulator);
@@ -9,7 +11,10 @@ pub(crate) fn target() -> Target {
             description: Some("x86_64 Apple watchOS Simulator".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 64,
         data_layout:

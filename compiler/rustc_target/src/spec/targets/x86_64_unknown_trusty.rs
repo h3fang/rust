@@ -1,8 +1,8 @@
 // Trusty OS target for X86_64.
 
 use crate::spec::{
-    Arch, LinkSelfContainedDefault, Os, PanicStrategy, RelroLevel, StackProbeType, Target,
-    TargetMetadata, TargetOptions,
+    Arch, LinkSelfContainedDefault, Os, PanicStrategy, RelroLevel, StackProbeType,
+    StandardLibrarySupport, Target, TargetMetadata, TargetOptions, TargetStandardLibrarySupport,
 };
 
 pub(crate) fn target() -> Target {
@@ -12,7 +12,10 @@ pub(crate) fn target() -> Target {
             description: Some("x86_64 Trusty".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 64,
         data_layout:

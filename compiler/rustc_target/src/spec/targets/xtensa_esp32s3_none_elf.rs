@@ -1,5 +1,8 @@
 use crate::spec::base::xtensa;
-use crate::spec::{Arch, Target, TargetMetadata, TargetOptions};
+use crate::spec::{
+    Arch, StandardLibrarySupport, Target, TargetMetadata, TargetOptions,
+    TargetStandardLibrarySupport,
+};
 
 pub(crate) fn target() -> Target {
     Target {
@@ -11,7 +14,10 @@ pub(crate) fn target() -> Target {
             description: Some("Xtensa ESP32-S3".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: Some(false),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Core,
+                StandardLibrarySupport::Core,
+            )),
         },
 
         options: TargetOptions {

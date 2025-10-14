@@ -1,7 +1,10 @@
 //! The `wasm32-wali-linux-musl` target is a wasm32 target compliant with the
 //! [WebAssembly Linux Interface](https://github.com/arjunr2/WALI).
 
-use crate::spec::{Arch, Cc, LinkerFlavor, Target, TargetMetadata, base};
+use crate::spec::{
+    Arch, Cc, LinkerFlavor, StandardLibrarySupport, Target, TargetMetadata,
+    TargetStandardLibrarySupport, base,
+};
 
 pub(crate) fn target() -> Target {
     let mut options = base::linux_wasm::opts();
@@ -26,7 +29,10 @@ pub(crate) fn target() -> Target {
             description: Some("WebAssembly Linux Interface with musl-libc".into()),
             tier: Some(3),
             host_tools: Some(false),
-            std: None,
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Core,
+                StandardLibrarySupport::Core,
+            )),
         },
         pointer_width: 32,
         data_layout: "e-m:e-p:32:32-p10:8:8-p20:8:8-i64:64-i128:128-n32:64-S128-ni:1:10:20".into(),

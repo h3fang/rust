@@ -667,6 +667,13 @@ fn print_crate_info(
                 let schema = rustc_target::spec::json_schema();
                 println_info!("{}", serde_json::to_string_pretty(&schema).unwrap());
             }
+            TargetStandardLibrarySupport => {
+                let support = sess.target.metadata.standard_library_support.as_ref();
+                let default = support.map(|s| s.default_support().crates()).unwrap_or_default();
+                let supported = support.map(|s| s.supported().crates()).unwrap_or_default();
+                println_info!("default: {default}");
+                println_info!("supported: {supported}",);
+            }
             AllTargetSpecsJson => {
                 let mut targets = BTreeMap::new();
                 for name in rustc_target::spec::TARGETS {

@@ -1,7 +1,8 @@
 use rustc_abi::Endian;
 
 use crate::spec::{
-    Abi, Arch, Cc, LinkerFlavor, Lld, StackProbeType, Target, TargetMetadata, TargetOptions, base,
+    Abi, Arch, Cc, LinkerFlavor, Lld, StackProbeType, StandardLibrarySupport, Target,
+    TargetMetadata, TargetOptions, TargetStandardLibrarySupport, base,
 };
 
 pub(crate) fn target() -> Target {
@@ -19,7 +20,10 @@ pub(crate) fn target() -> Target {
             description: Some("PowerPC Linux (kernel 3.2, glibc 2.17)".into()),
             tier: Some(2),
             host_tools: Some(true),
-            std: Some(true),
+            standard_library_support: Some(TargetStandardLibrarySupport::new(
+                StandardLibrarySupport::Std,
+                StandardLibrarySupport::Std,
+            )),
         },
         pointer_width: 64,
         data_layout: "E-m:e-Fi64-i64:64-i128:128-n32:64-S128-v256:256:256-v512:512:512".into(),
