@@ -2226,6 +2226,8 @@ symbols! {
         suggestion,
         super_let,
         supertrait_item_shadowing,
+        sve_cast,
+        sve_select,
         sym,
         sync,
         synthetic,

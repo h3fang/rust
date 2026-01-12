@@ -4,7 +4,8 @@ use std::ffi::c_uint;
 use std::ptr;
 
 use rustc_abi::{
-    Align, BackendRepr, ExternAbi, Float, HasDataLayout, Primitive, Size, WrappingRange,
+    Align, BackendRepr, ExternAbi, Float, HasDataLayout, Primitive, ScalableElt, Size,
+    WrappingRange,
 };
 use rustc_codegen_ssa::base::{compare_simd_types, wants_msvc_seh, wants_wasm_eh};
 use rustc_codegen_ssa::codegen_attrs::autodiff_attrs;
@@ -611,6 +612,40 @@ impl<'ll, 'tcx> IntrinsicCallBuilderMethods<'tcx> for Builder<'_, 'll, 'tcx> {
                     name,
                     fn_args,
                     &loaded_args,
+                    result.layout.ty,
+                    llret_ty,
+                    span,
+                ) {
+                    Ok(llval) => llval,
+                    // If there was an error, just skip this invocation... we'll abort compilation
+                    // anyway, but we can keep codegen'ing to find more errors.
+                    Err(()) => return Ok(()),
+                }
+            }
+
+            _ if name.as_str().starts_with("sve_") => {
+                let llret_ty = if result.layout.ty.is_scalable_vector()
+                    && let BackendRepr::Memory { .. } = result.layout.backend_repr
+                {
+                    let (count, elem_ty) =
+                        result.layout.ty.scalable_vector_element_count_and_type(self.tcx());
+                    let elem_ll_ty = match elem_ty.kind() {
+                        ty::Float(f) => self.type_float_from_ty(*f),
+                        ty::Int(i) => self.type_int_from_ty(*i),
+                        ty::Uint(u) => self.type_uint_from_ty(*u),
+                        ty::Bool => self.type_bool(),
+                        _ => unreachable!(),
+                    };
+                    self.type_scalable_vector(elem_ll_ty, count as u64)
+                } else {
+                    result.layout.llvm_type(self)
+                };
+
+                match generic_sve_intrinsic(
+                    self,
+                    name,
+                    fn_args,
+                    args,
                     result.layout.ty,
                     llret_ty,
                     span,
@@ -2837,4 +2872,212 @@ fn generic_simd_intrinsic<'ll, 'tcx>(
     }
 
     span_bug!(span, "unknown SIMD intrinsic");
+}
+
+fn generic_sve_intrinsic<'ll, 'tcx>(
+    bx: &mut Builder<'_, 'll, 'tcx>,
+    name: Symbol,
+    _fn_args: GenericArgsRef<'tcx>,
+    args: &[OperandRef<'tcx, &'ll Value>],
+    ret_ty: Ty<'tcx>,
+    llret_ty: &'ll Type,
+    span: Span,
+) -> Result<&'ll Value, ()> {
+    macro_rules! return_error {
+        ($diag: expr) => {{
+            bx.sess().dcx().emit_err($diag);
+            return Err(());
+        }};
+    }
+
+    macro_rules! require {
+        ($cond: expr, $diag: expr) => {
+            if !$cond {
+                return_error!($diag);
+            }
+        };
+    }
+
+    fn scalable_vector_type<'tcx>(tcx: TyCtxt<'tcx>, ty: Ty<'tcx>) -> (usize, u16, Ty<'tcx>) {
+        let rustc_middle::ty::Adt(def, args) = ty.kind() else {
+            bug!("scalable vector is not `rustc_middle::ty::Adt`")
+        };
+        let variant = def.non_enum_variant();
+        match def.repr().scalable {
+            Some(ScalableElt::ElementCount(element_count)) => {
+                assert_eq!(variant.fields.len(), 1);
+                let field_ty = variant.fields[rustc_abi::FieldIdx::ZERO].ty(tcx, args);
+                (1, element_count, field_ty)
+            }
+            Some(ScalableElt::Container) => {
+                assert!(!variant.fields.is_empty());
+                let field_ty = variant.fields[rustc_abi::FieldIdx::ZERO].ty(tcx, args);
+                let (tuple_len, element_count, field_ty) = scalable_vector_type(tcx, field_ty);
+                if tuple_len != 1 {
+                    bug!("illegal nested `rustc_abi::ScalableElt::Container`");
+                }
+                (variant.fields.len(), element_count, field_ty)
+            }
+            None => bug!("scalable vector with invalid `rustc_abi::ReprOptions`"),
+        }
+    }
+
+    macro_rules! require_scalable_vector {
+        ($ty: expr) => {{
+            require!(
+                $ty.is_scalable_vector(),
+                InvalidMonomorphization::ExpectedScalableVector { span, name, ty: $ty }
+            );
+
+            scalable_vector_type(bx.tcx(), $ty)
+        }};
+    }
+
+    macro_rules! require_scalable_vector_predicate {
+        ($ty: expr) => {{
+            let (tuple_len, elem_count, elem_ty) = require_scalable_vector!($ty);
+            require!(
+                tuple_len == 1 && elem_count == 16 && elem_ty.is_bool(),
+                InvalidMonomorphization::ExpectedScalableVectorPredicate { span, name, ty: $ty }
+            );
+        }};
+    }
+
+    if name == sym::sve_select {
+        let predicate = args[0].layout.ty;
+        let in1_ty = args[1].layout.ty;
+
+        require_scalable_vector_predicate!(predicate);
+        let (in_tuple_len, in_elem_count, _elem_ty) = require_scalable_vector!(in1_ty);
+
+        if in_tuple_len > 1 {
+            todo!("SME intrinsics");
+        }
+
+        let predicate = if in_elem_count < 16 {
+            let i1 = bx.type_i1();
+            let i1xn = bx.type_scalable_vector(i1, in_elem_count as u64);
+            bx.call_intrinsic(
+                format!("llvm.aarch64.sve.convert.from.svbool.nxv{in_elem_count}i1"),
+                &[i1xn],
+                &[args[0].immediate()],
+            )
+        } else {
+            args[0].immediate()
+        };
+
+        let val = bx.select(predicate, args[1].immediate(), args[2].immediate());
+        return Ok(val);
+    }
+
+    if name == sym::sve_cast {
+        let in_ty = args[0].layout.ty;
+        let (in_tuple_len, in_elem_count, in_elem) = require_scalable_vector!(in_ty);
+        let (out_tuple_len, out_elem_count, out_elem) = require_scalable_vector!(ret_ty);
+        require!(
+            in_tuple_len == out_tuple_len && in_elem_count == out_elem_count,
+            InvalidMonomorphization::MismatchedScalableVector {
+                span,
+                name,
+                ty1: in_ty,
+                ty2: ret_ty,
+            }
+        );
+
+        if in_elem == out_elem {
+            return Ok(args[0].immediate());
+        }
+
+        if in_tuple_len > 1 {
+            todo!("SME intrinsics");
+        }
+
+        #[derive(Copy, Clone)]
+        enum Sign {
+            Unsigned,
+            Signed,
+        }
+        use Sign::*;
+
+        enum Style {
+            Float,
+            Int(Sign),
+            Unsupported,
+        }
+
+        let (in_style, in_width) = match in_elem.kind() {
+            // vectors of pointer-sized integers should've been
+            // disallowed before here, so this unwrap is safe.
+            ty::Int(i) => (
+                Style::Int(Signed),
+                i.normalize(bx.tcx().sess.target.pointer_width).bit_width().unwrap(),
+            ),
+            ty::Uint(u) => (
+                Style::Int(Unsigned),
+                u.normalize(bx.tcx().sess.target.pointer_width).bit_width().unwrap(),
+            ),
+            ty::Float(f) => (Style::Float, f.bit_width()),
+            _ => (Style::Unsupported, 0),
+        };
+        let (out_style, out_width) = match out_elem.kind() {
+            ty::Int(i) => (
+                Style::Int(Signed),
+                i.normalize(bx.tcx().sess.target.pointer_width).bit_width().unwrap(),
+            ),
+            ty::Uint(u) => (
+                Style::Int(Unsigned),
+                u.normalize(bx.tcx().sess.target.pointer_width).bit_width().unwrap(),
+            ),
+            ty::Float(f) => (Style::Float, f.bit_width()),
+            _ => (Style::Unsupported, 0),
+        };
+
+        match (in_style, out_style) {
+            (Style::Int(sign), Style::Int(_)) => {
+                return Ok(match in_width.cmp(&out_width) {
+                    Ordering::Greater => bx.trunc(args[0].immediate(), llret_ty),
+                    Ordering::Equal => args[0].immediate(),
+                    Ordering::Less => match sign {
+                        Sign::Signed => bx.sext(args[0].immediate(), llret_ty),
+                        Sign::Unsigned => bx.zext(args[0].immediate(), llret_ty),
+                    },
+                });
+            }
+            (Style::Int(Sign::Signed), Style::Float) => {
+                return Ok(bx.sitofp(args[0].immediate(), llret_ty));
+            }
+            (Style::Int(Sign::Unsigned), Style::Float) => {
+                return Ok(bx.uitofp(args[0].immediate(), llret_ty));
+            }
+            (Style::Float, Style::Int(sign)) => {
+                return Ok(match (sign, name == sym::simd_as) {
+                    (Sign::Unsigned, false) => bx.fptoui(args[0].immediate(), llret_ty),
+                    (Sign::Signed, false) => bx.fptosi(args[0].immediate(), llret_ty),
+                    (_, true) => bx.cast_float_to_int(
+                        matches!(sign, Sign::Signed),
+                        args[0].immediate(),
+                        llret_ty,
+                    ),
+                });
+            }
+            (Style::Float, Style::Float) => {
+                return Ok(match in_width.cmp(&out_width) {
+                    Ordering::Greater => bx.fptrunc(args[0].immediate(), llret_ty),
+                    Ordering::Equal => args[0].immediate(),
+                    Ordering::Less => bx.fpext(args[0].immediate(), llret_ty),
+                });
+            }
+            _ => { /* Unsupported. Fallthrough. */ }
+        }
+        return_error!(InvalidMonomorphization::UnsupportedCast {
+            span,
+            name,
+            in_ty,
+            in_elem,
+            ret_ty,
+            out_elem
+        });
+    }
+
+    span_bug!(span, "unknown SVE intrinsic");
 }

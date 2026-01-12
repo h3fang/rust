@@ -107,6 +107,10 @@ codegen_ssa_invalid_monomorphization_expected_pointer = invalid monomorphization
 
 codegen_ssa_invalid_monomorphization_expected_return_type = invalid monomorphization of `{$name}` intrinsic: expected return type `{$in_ty}`, found `{$ret_ty}`
 
+codegen_ssa_invalid_monomorphization_expected_scalable_vector = invalid monomorphization of `{$name}` intrinsic: expected scalable vector, got `{$ty}`
+
+codegen_ssa_invalid_monomorphization_expected_scalable_vector_predicate = invalid monomorphization of `{$name}` intrinsic: expected scalable vector predicate, got `{$ty}`
+
 codegen_ssa_invalid_monomorphization_expected_usize = invalid monomorphization of `{$name}` intrinsic: expected `usize`, got `{$ty}`
 
 codegen_ssa_invalid_monomorphization_expected_vector_element_type = invalid monomorphization of `{$name}` intrinsic: expected element type `{$expected_element}` of vector type `{$vector_type}` to be a signed or unsigned integer type
@@ -124,6 +128,8 @@ codegen_ssa_invalid_monomorphization_invalid_bitmask = invalid monomorphization 
 codegen_ssa_invalid_monomorphization_mask_wrong_element_type = invalid monomorphization of `{$name}` intrinsic: expected mask element type to be an integer, found `{$ty}`
 
 codegen_ssa_invalid_monomorphization_mismatched_lengths = invalid monomorphization of `{$name}` intrinsic: mismatched lengths: mask length `{$m_len}` != other vector length `{$v_len}`
+
+codegen_ssa_invalid_monomorphization_mismatched_scalable_vector = scalable vector `{$ty2}` tuple len and element count does not match other scalable vector `{$ty2}`
 
 codegen_ssa_invalid_monomorphization_non_scalable_type = invalid monomorphization of `{$name}` intrinsic: expected non-scalable type, found scalable type `{$ty}`
 codegen_ssa_invalid_monomorphization_return_element = invalid monomorphization of `{$name}` intrinsic: expected return element type `{$in_elem}` (element of input `{$in_ty}`), found `{$ret_ty}` with element type `{$out_ty}`

@@ -766,6 +766,9 @@ pub(crate) fn check_intrinsic_type(
         sym::atomic_load => (1, 1, vec![Ty::new_imm_ptr(tcx, param(0))], param(0)),
         sym::atomic_store => (1, 1, vec![Ty::new_mut_ptr(tcx, param(0)), param(0)], tcx.types.unit),
 
+        sym::sve_cast => (2, 0, vec![param(0)], param(1)),
+        sym::sve_select => (2, 0, vec![param(0), param(1), param(1)], param(1)),
+
         sym::atomic_xchg
         | sym::atomic_max
         | sym::atomic_min

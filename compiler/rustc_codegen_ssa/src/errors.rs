@@ -1074,6 +1074,31 @@ pub enum InvalidMonomorphization<'tcx> {
         name: Symbol,
         ty: Ty<'tcx>,
     },
+
+    #[diag(codegen_ssa_invalid_monomorphization_expected_scalable_vector, code = E0511)]
+    ExpectedScalableVector {
+        #[primary_span]
+        span: Span,
+        name: Symbol,
+        ty: Ty<'tcx>,
+    },
+
+    #[diag(codegen_ssa_invalid_monomorphization_expected_scalable_vector_predicate, code = E0511)]
+    ExpectedScalableVectorPredicate {
+        #[primary_span]
+        span: Span,
+        name: Symbol,
+        ty: Ty<'tcx>,
+    },
+
+    #[diag(codegen_ssa_invalid_monomorphization_mismatched_scalable_vector, code = E0511)]
+    MismatchedScalableVector {
+        #[primary_span]
+        span: Span,
+        name: Symbol,
+        ty1: Ty<'tcx>,
+        ty2: Ty<'tcx>,
+    },
 }
 
 pub enum ExpectedPointerMutability {
